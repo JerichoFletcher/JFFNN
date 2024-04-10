@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34525.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JFFNN", "JFFNN\JFFNN.csproj", "{70F53E8E-6FB5-4623-B848-CC2F20AC7624}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JFFNNConsole", "JFFNNConsole\JFFNNConsole.csproj", "{4A2933E1-8C55-4F3C-A698-F663E2D5CA97}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{70F53E8E-6FB5-4623-B848-CC2F20AC7624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70F53E8E-6FB5-4623-B848-CC2F20AC7624}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70F53E8E-6FB5-4623-B848-CC2F20AC7624}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70F53E8E-6FB5-4623-B848-CC2F20AC7624}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A2933E1-8C55-4F3C-A698-F663E2D5CA97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A2933E1-8C55-4F3C-A698-F663E2D5CA97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A2933E1-8C55-4F3C-A698-F663E2D5CA97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A2933E1-8C55-4F3C-A698-F663E2D5CA97}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D8BFD445-44D8-4F7B-AFDE-0B0DD687BC80}
+	EndGlobalSection
+EndGlobal
