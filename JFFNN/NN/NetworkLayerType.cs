@@ -1,4 +1,5 @@
 ﻿using JFFNN.Structs;
+using System;
 
 namespace JFFNN.NN {
     /// <summary>
@@ -43,7 +44,10 @@ namespace JFFNN.NN {
                 Weights = weights;
             }
 
-            public Vector Feed(Vector input) => ActivationFunction(Weights * (1d & input));
+            public Vector Feed(Vector input) {
+                if(input.Size != Weights.ColumnCount - 1) throw new ArgumentException($"Expected layer input of size {Weights.ColumnCount - 1}, got {input.Size}");
+                return ActivationFunction(Weights * (1d & input));
+            }
         }
     }
 }

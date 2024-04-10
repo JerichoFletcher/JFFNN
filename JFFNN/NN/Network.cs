@@ -1,5 +1,9 @@
 ﻿using JFFNN.Structs;
+using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 
 namespace JFFNN.NN {
     /// <summary>
@@ -11,10 +15,33 @@ namespace JFFNN.NN {
         /// </summary>
         public int InputSize { get; private set; }
 
+        private readonly CancellationTokenSource cancellationSource = new CancellationTokenSource();
         private NetworkLayer[] layers;
 
         private Network(int inputSize) {
             InputSize = inputSize;
+        }
+
+        private List<TransformBlock<Vector, Vector>> CreatePipeline() {
+            var pipeline = new List<TransformBlock<Vector, Vector>>();
+
+            for(int i = 0; i < layers.Length; ++i) {
+                NetworkLayer layer = layers[i];
+                var block = new TransformBlock<Vector, Vector>(v => layer.Feed(v),
+                    new ExecutionDataflowBlockOptions() {
+                        CancellationToken = cancellationSource.Token
+                    }
+                );
+
+                pipeline.Add(block);
+                if(i > 0) pipeline[i - 1].LinkTo(block,
+                    new DataflowLinkOptions() {
+                        PropagateCompletion = true
+                    }
+                );
+            }
+
+            return pipeline;
         }
 
         /// <summary>
@@ -26,9 +53,7 @@ namespace JFFNN.NN {
             if(layers == null || layers.Length == 0) return input;
 
             Vector current = input;
-            foreach(NetworkLayer layer in layers) {
-                current = layer.Feed(current);
-            }
+            foreach(NetworkLayer layer in layers) current = layer.Feed(current);
 
             return current;
         }
@@ -38,12 +63,28 @@ namespace JFFNN.NN {
         /// </summary>
         /// <param name="input">The input vectors.</param>
         /// <returns>The output vectors.</returns>
+        /// <exception cref="AggregateException">One or more exception was thrown in the feed-forward pipeline.</exception>
         public IEnumerable<Vector> Feed(IEnumerable<Vector> input) {
             if(layers == null || layers.Length == 0) foreach(Vector v in input) yield return v;
 
-            foreach(Vector v in input) {
-                yield return Feed(v);
+            var pipeline = CreatePipeline();
+            var firstBlock = pipeline[0];
+            var lastBlock = pipeline[pipeline.Count - 1];
+
+            try {
+                foreach(Vector v in input) if(!firstBlock.Post(v)) break;
+            } finally {
+                firstBlock.Complete();
             }
+
+            try {
+                while(lastBlock.OutputAvailableAsync().Result)
+                    while(lastBlock.TryReceive(out Vector output)) yield return output;
+            } finally {
+                cancellationSource.Cancel();
+            }
+
+            lastBlock.Completion.Wait();
         }
 
         /// <summary>
