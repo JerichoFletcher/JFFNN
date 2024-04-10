@@ -52,10 +52,9 @@ namespace JFFNN.Structs {
             Parallel.For(0, mat.RowCount, row => {
                 double d = 0d;
 
-                Parallel.For(0, mat.ColumnCount, col => {
-                    double p = mat[row, col] * vec[col];
-                    Interlockedf.Add(ref d, p);
-                });
+                for(int col = 0; col < mat.ColumnCount; ++col) {
+                    d += mat[row, col] * vec[col];
+                }
 
                 result[row] = d;
             });
